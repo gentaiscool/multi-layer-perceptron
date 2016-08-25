@@ -7,9 +7,9 @@ public class NN {
 
 	private ArrayList<Layer> layers = new ArrayList<>();
 	private Random rand = new Random();
-	private final double epsilon = 0.00000000001d;
-	private final double learningRate = 0.5f;
-	private final double momentum = 0.5f;
+	private double epsilon = 0.00000000001d;
+	private double learningRate = 0.5f;
+	private double momentum = 0.5f;
 	private boolean debug = false;
 
 	private Neuron bias = new Neuron();
@@ -20,12 +20,15 @@ public class NN {
 
 	private double condition = 0.001d; // minimal error to stop the iteration
 
-	public NN(int[] neurons, double[][] input, double[][] expectedOutput, boolean debug) {
+	public NN(int[] neurons, double[][] input, double[][] expectedOutput, boolean debug, double epsilon, double learningRate, double momentum) {
 		// constructor
 		this.neurons = neurons;
 		this.input = input;
 		this.expectedOutput = expectedOutput;
 		this.debug = debug;
+		this.epsilon = epsilon;
+		this.learningRate = learningRate;
+		this.momentum = momentum;
 
 		for (int i = 0; i < neurons.length; i++) {
 			Layer layer = new Layer();
@@ -72,42 +75,48 @@ public class NN {
 		Connection.counter = 0;
 	}
 
-	public void test(double[][] input) {
+	public double[][] test(double[][] input) {
 		// test NN
+		double[][] result = new double[input.length][];
+		
 		System.out.println("> Test started");
 		for (int i = 0; i < input.length; i++) {
 			setInput(input[i]);
 
 			feedforward();
 			double[] output = getOutput();
+			result[i] = output;
+			
+			if (debug) {
+				String strInput = "";
+				String strOutput = "";
+				String strExpectedOutput = "";
 
-			String strInput = "";
-			String strOutput = "";
-			String strExpectedOutput = "";
+				for (int j = 0; j < input[i].length; j++) {
+					strInput += input[i][j];
+					if (j < input[i].length - 1)
+						strInput += " ";
+				}
 
-			for (int j = 0; j < input[i].length; j++) {
-				strInput += input[i][j];
-				if (j < input[i].length - 1)
-					strInput += " ";
-			}
+				for (int j = 0; j < output.length; j++) {
+					strOutput += output[j];
+					if (j < output.length - 1)
+						strOutput += " ";
+				}
 
-			for (int j = 0; j < output.length; j++) {
-				strOutput += output[j];
-				if (j < output.length - 1)
-					strOutput += " ";
-			}
+				for (int j = 0; j < expectedOutput[i].length; j++) {
+					strExpectedOutput += expectedOutput[i][j];
+					if (j < expectedOutput[i].length - 1)
+						strExpectedOutput += " ";
+				}
 
-			for (int j = 0; j < expectedOutput[i].length; j++) {
-				strExpectedOutput += expectedOutput[i][j];
-				if (j < expectedOutput[i].length - 1)
-					strExpectedOutput += " ";
-			}
-
-			if(debug)
 				System.out.println("* Actual Output: " + strOutput + " , Expected Output: " + strExpectedOutput);
+			}
 		}
 		System.out.println("* Min error: " + minError);
 		System.out.println("> Test ended");
+		
+		return result;
 	}
 
 	public void train(int epoch) {
