@@ -1,7 +1,8 @@
+package core;
 import java.util.ArrayList;
 
 public class Layer {
-	private ArrayList<Neuron> neurons = new ArrayList();
+	private ArrayList<Neuron> neurons = new ArrayList<Neuron>();
 	
 	public Layer() {
 	

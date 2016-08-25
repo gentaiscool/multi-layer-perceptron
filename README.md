@@ -9,6 +9,7 @@ The repository contains multi-layer perceptron code written in Java. I am trying
 4. Sample: XOR Operation
 
 ## Further Implementation
+- [X] Add XOR example
 - [ ] Multi-hidden layer
 - [ ] Good GUI
 

@@ -1,3 +1,4 @@
+package core;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -14,20 +15,9 @@ public class NN {
 	private int[] neurons;
 	private double[][] input;
 	private double[][] expectedOutput;
-	private double minError = 10000000000d;
-
-	public static void main(String[] args) {
-		// for current development, only support 1 hidden layer
-		int[] neurons = { 2, 4, 1 };
-		double[][] input = { { 0, 0 }, { 0, 1 }, { 1, 0 }, { 1, 1 } };
-		double[][] expectedOutput = { { 1 }, { 0 }, { 0 }, { 1 } };
-		int epoch = 100000;
-
-		NN nn = new NN(neurons, input, expectedOutput, false);
-		nn.train(epoch);
-
-		nn.test(input);
-	}
+	private double minError = 10000000000d; // store the minimum error achieved
+	
+	private double condition = 0.001d; // minimal error to stop the iteration
 
 	public NN(int[] neurons, double[][] input, double[][] expectedOutput, boolean debug) {
 		// constructor
@@ -112,10 +102,10 @@ public class NN {
 					strExpectedOutput += " ";
 			}
 
-			System.out.println("Input: " + strInput + ", Actual Output: " + strOutput + " , Expected Output: "
+			System.out.println("* Input: " + strInput + ", Actual Output: " + strOutput + " , Expected Output: "
 					+ strExpectedOutput);
 		}
-		System.out.println("Min error: " + minError);
+		System.out.println("* Min error: " + minError);
 		System.out.println("> Test ended");
 	}
 
@@ -142,8 +132,15 @@ public class NN {
 
 				backpropagation(expectedOutput[i]);
 			}
+			
+			// break when error is lower or equal than condition
+			if(error <= condition){
+				System.out.println("* Training break as condition achieved");
+				break;
+			}
+			
 			if (debug)
-				System.out.println("Error (" + (x + 1) + ") " + error);
+				System.out.println("* Error (" + (x + 1) + ") " + error);
 		}
 		System.out.println("> Train ended");
 	}
