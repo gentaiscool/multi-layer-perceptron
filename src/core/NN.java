@@ -1,4 +1,5 @@
 package core;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -16,7 +17,7 @@ public class NN {
 	private double[][] input;
 	private double[][] expectedOutput;
 	private double minError = 10000000000d; // store the minimum error achieved
-	
+
 	private double condition = 0.001d; // minimal error to stop the iteration
 
 	public NN(int[] neurons, double[][] input, double[][] expectedOutput, boolean debug) {
@@ -102,8 +103,8 @@ public class NN {
 					strExpectedOutput += " ";
 			}
 
-			System.out.println("* Input: " + strInput + ", Actual Output: " + strOutput + " , Expected Output: "
-					+ strExpectedOutput);
+			if(debug)
+				System.out.println("* Actual Output: " + strOutput + " , Expected Output: " + strExpectedOutput);
 		}
 		System.out.println("* Min error: " + minError);
 		System.out.println("> Test ended");
@@ -114,31 +115,31 @@ public class NN {
 		System.out.println("> Train started");
 		for (int x = 0; x < epoch; x++) {
 			double error = 0d;
-			for (int i = 0; i < input.length; i++) {
-				// for each sample
-				// set input
-				setInput(input[i]);
 
-				feedforward();
-				double[] output = getOutput();
+			int i = rand.nextInt(input.length) % input.length;
+			// for each sample
+			// set input
+			setInput(input[i]);
 
-				error = 0d;
+			feedforward();
+			double[] output = getOutput();
 
-				for (int j = 0; j < expectedOutput[i].length; j++) {
-					double err = Math.pow(output[j] - expectedOutput[i][j], 2);
-					error += err;
-				}
-				minError = Math.min(minError, error);
+			error = 0d;
 
-				backpropagation(expectedOutput[i]);
+			for (int j = 0; j < expectedOutput[i].length; j++) {
+				double err = Math.pow(output[j] - expectedOutput[i][j], 2);
+				error += err;
 			}
-			
+			minError = Math.min(minError, error);
+
+			backpropagation(expectedOutput[i]);
+
 			// break when error is lower or equal than condition
-			if(error <= condition){
+			if (error <= condition) {
 				System.out.println("* Training break as condition achieved");
 				break;
 			}
-			
+
 			if (debug)
 				System.out.println("* Error (" + (x + 1) + ") " + error);
 		}
@@ -161,7 +162,7 @@ public class NN {
 		}
 	}
 
-	public double normalize(double x){
+	public double normalize(double x) {
 		if (x < 0)
 			return epsilon;
 		else if (x > 1)
@@ -169,7 +170,7 @@ public class NN {
 		else
 			return x;
 	}
-	
+
 	public void feedforward() {
 		// calculate output of each layer from first hidden layer until output
 		// layer

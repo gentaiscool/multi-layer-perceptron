@@ -9,9 +9,13 @@ The repository contains multi-layer perceptron code written in Java. I am trying
 4. Sample: XOR Operation
 
 ## Further Implementation
-- [X] Add XOR example
+- [X] Add other example (MNIST)
 - [ ] Multi-hidden layer
 - [ ] Good GUI
+
+## Dataset
+The program uses dataset which can be downloaded from:
+- https://www.kaggle.com/c/digit-recognizer/ for MNIST in csv form
 
 ### The MIT License (MIT)
 
